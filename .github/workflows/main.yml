@@ -1,51 +1,33 @@
-name: Deploy to Production
+name: Deploy to Server using Docker Hub
 
-# Trigger this workflow when pushing to the 'main' branch
 on:
   push:
     branches:
-      - main  # Replace with your default branch if different
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code from GitHub
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # Set up Docker Buildx (used for building multi-platform images)
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # Log in to Docker Hub using your credentials (stored as secrets)
-      - name: Log in to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and push the Docker image to Docker Hub
-      - name: Build and Push Docker image
+      - name: Build and Push Docker Image
         run: |
-          docker build -t kevinlin192003/sports-blog:${{ github.sha }} .
-          docker push kevinlin192003/sports-blog:${{ github.sha }}
+          docker build -t myusername/myimage:latest .
+          docker push myusername/myimage:latest
 
-      # Deploy to the server using SSH
-      - name: Deploy to server using SSH
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.SERVER_HOST }}            # Your server IP or domain
-          username: ${{ secrets.SERVER_USERNAME }}    # Your server's SSH username
-          key: ${{ secrets.SSH_PRIVATE_KEY }}         # The SSH private key stored in GitHub Secrets
-          port: 22                                    # Default SSH port
-          script: |
-            # Pull the latest Docker image
-            docker pull kevinlin192003/sports-blog:${{ github.sha }}
-
-            # Stop and remove any running containers
+      - name: Deploy to Server (via Docker Compose)
+        run: |
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} <<EOF
+            docker pull myusername/myimage:latest
             docker-compose down
-
-            # Start the new container in detached mode
             docker-compose up -d
+          EOF

@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   webizly:
-    image: kevinlin192003/sports-blog:v1  
+    image: kevinlin192003/sports-blog:latest  
     container_name: mywebclass  
     pull_policy: always
     restart: always

@@ -1,14 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HTML 5 Boilerplate</title>
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-	  <h1>mywebclass</h1>
-	<script src="js/index.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    
+    <nav class="navbar">
+      <div class="logo">Sportify</div>
+      <a href="./index.html">Home</a>
+      <a href="./articles.html">Blog</a>
+      <a href="https://api.sportify2024.me/">Sign In</a>
+      
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <!-- <img src="./images/hero.jpg" alt="Hero Image" class="hero-image"> -->
+    <div class="hero-content">
+      <h1>Unleash Your Passion for Sports!</h1>
+      <p>Stay updated with the latest sports stories, insights, and trends from fans just like you.</p>
+      <div class="hero-buttons">
+        <button onclick="window.location.href='./articles.html'">Read Latest Posts</button>
+        <button onclick="window.location.href='https://api.sportify2024.me/'">Start Your Blog</button>
+
+      </div>
+    </div>
+    <img src="./assets/hero-right-image.png" alt="Hero Image" class="hero-image">
+  </section>
+
+  <!-- Featured Blogs Section -->
+  <section class="featured-blogs">
+    <h1>Trending Stories in Sports</h1>
+    <div class="blogs-grid" id="featured-blogs-container">
+      <!-- Dynamic content will be inserted here -->
+      
+    </div>
+  </section>
+
+  <!-- Dynamic Articles Section
+  <section class="dynamic-articles">
+    <h2>Latest Articles</h2>
+    <div id="articles-container"></div>
+    <div class="view-more">
+      <a href="./articles.html" class="view-more-link">View All Articles</a>
+    </div>
+  </section>
+  -->
+  <!-- Categories Section -->
+  <section class="categories">
+    <h2>Explore by Sport</h2>
+    <div class="categories-grid">
+      <div class="category-tile">Football</div>
+      <div class="category-tile">Basketball</div>
+      <div class="category-tile">Soccer</div>
+      <div class="category-tile">Baseball</div>
+    </div>
+  </section>
+
+  <!-- Social Proof Section -->
+  <section class="social-proof">
+    <h2>What People Are Saying</h2>
+    <div class="testimonial">
+      <p>"Creating my blog here was seamless and fun!" - User</p>
+    </div>
+    <div class="stats">
+      <p>Over 5,000 Blogs Created</p>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="quick-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+    <div class="newsletter">
+      <input type="email" placeholder="Your email">
+      <button>Subscribe</button>
+    </div>
+    <div class="social-icons">
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">Instagram</a>
+    </div>
+  </footer>
+
+  <!-- JavaScript to Fetch Articles -->
+  <script>
+    async function fetchAndDisplayArticles() {
+      try {
+        const response = await fetch('https://api.sportify2024.me/jsonapi/node/article');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const featuredBlogsContainer = document.getElementById('featured-blogs-container');
+
+        // Display the latest 3 articles dynamically
+        data.data.slice(0, 3).forEach(article => {
+          const blogCard = document.createElement('div');
+          blogCard.classList.add('blog-card');
+
+          const title = article.attributes.title;
+          const excerpt = article.attributes.body.processed.slice(0, 100) + '...'; // Shortened body
+          const articleId = article.id;
+
+          // You might need to adjust the image path based on your Drupal setup
+          const imageUrl = article.attributes.field_image?.uri?.url || './images/default-blog.jpg';
+
+          blogCard.innerHTML = `
+            
+            <div class="blog-card-content">
+              <h3>${title}</h3>
+              <p>${excerpt}</p>
+              <a href="./article-details.html?id=${articleId}">Read More</a>
+            </div>
+          `;
+
+          featuredBlogsContainer.appendChild(blogCard);
+        });
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchAndDisplayArticles);
+  </script>
+</body>
 </html>
+
+
+
+
+
